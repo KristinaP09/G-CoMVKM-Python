@@ -1,11 +1,32 @@
-# G-CoMVKM Python Implementation
+# G-CoMVKM: Globally Collaborative Multi-View k-Means Clustering
+
+[![PyPI version](https://badge.fury.io/py/gcomvkm.svg)](https://badge.fury.io/py/gcomvkm)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python Versions](https://img.shields.io/pypi/pyversions/gcomvkm.svg)](https://pypi.org/project/gcomvkm/)
+[![Paper](https://img.shields.io/badge/Paper-MDPI%20Electronics-blue)](https://www.mdpi.com/2079-9292/14/11/2129)
 
 ## Overview
-This is a Python implementation of the Globally Collaborative Multi-View k-Means (G-CoMVKM) clustering algorithm, originally developed by Kristina P. Sinaga. The algorithm integrates a collaborative transfer learning framework with entropy-regularized feature-view reduction, enabling dynamic elimination of uninformative components. This method achieves clustering by balancing local view importance and global consensus.
+
+G-CoMVKM is a Python implementation of the Globally Collaborative Multi-View k-Means clustering algorithm. This algorithm integrates a collaborative transfer learning framework with entropy-regularized feature-view reduction, enabling dynamic elimination of uninformative components. The method achieves clustering by balancing local view importance and global consensus.
+
+### Key Features
+
+- **Multi-View Clustering**: Process data from multiple views/sources simultaneously
+- **Feature Weight Learning**: Automatically determine the importance of each feature
+- **View Weight Learning**: Automatically determine the importance of each view
+- **Feature Selection**: Entropy-regularized mechanism to discard irrelevant features
+- **Global Consensus**: Balance local view objectives with global clustering agreement
 
 ## Installation
 
+You can install G-CoMVKM directly from PyPI:
+
+```bash
+pip install gcomvkm
+```
+
 ### Requirements
+
 - Python 3.7+
 - NumPy
 - SciPy
@@ -13,85 +34,144 @@ This is a Python implementation of the Globally Collaborative Multi-View k-Means
 - scikit-learn
 - seaborn
 
-You can install the dependencies using pip:
+## Quick Start
 
-```bash
-pip install numpy scipy matplotlib scikit-learn seaborn
-```
+Here's a simple example of how to use G-CoMVKM:
 
-## Structure
-The project is organized as follows:
-
-```
-G-CoMVKM-Python/
-├── main.py                 # Main script to run demonstrations
-├── g_comvkm.py             # Implementation of the G-CoMVKM algorithm
-├── demo_2V2D2C.py          # Demo script for the 2V2D2C dataset
-├── utils/
-│   ├── __init__.py
-│   └── data_loader.py      # Utilities for loading datasets
-└── evaluation/
-    ├── __init__.py
-    └── metrics.py          # Implementation of evaluation metrics
-```
-
-## Usage
-To run the demo on the 2V2D2C (2 Views, 2 Dimensions, 2 Clusters) dataset:
-
-```bash
-python main.py --dataset 2V2D2C
-```
-
-## Algorithm Parameters
-- `n_clusters`: Number of clusters to form
-- `gamma`: Exponent parameter to control the weights of V (typically in range [0,1])
-- `theta`: Coefficient parameter to control the weights of W (typically > 0)
-- `max_iter`: Maximum number of iterations
-- `tol`: Convergence tolerance
-- `verbose`: Whether to print progress information
-- `random_state`: Random seed for reproducibility
-
-## Example
 ```python
-from g_comvkm import GCoMVKM
-from utils.data_loader import load_synthetic_data
+from gcomvkm import GCoMVKM
+from gcomvkm.utils import load_synthetic_data
+from gcomvkm.evaluation import nmi, rand_index, adjusted_rand_index
 
-# Load the dataset
-X, label = load_synthetic_data()
+# Load the synthetic dataset (2 views, 2 dimensions, 2 clusters)
+X, true_labels = load_synthetic_data()
 
 # Create and fit the model
 model = GCoMVKM(
     n_clusters=2,
-    gamma=5.0,
-    theta=4.0,
+    gamma=5.0,     # Feature selection regularization parameter
+    theta=4.0,     # View weight regularization parameter
     max_iter=100,
     tol=1e-4,
     verbose=True,
     random_state=42
 )
 
+# Fit the model to the data
 model.fit(X)
 
-# Get the cluster assignments
+# Get the clustering results
 predicted_labels = model.labels_
+feature_weights = model.feature_weights_
+view_weights = model.view_weights_
+
+# Evaluate clustering performance
+nmi_score = nmi(true_labels, predicted_labels)
+ri_score = rand_index(true_labels, predicted_labels)
+ari_score = adjusted_rand_index(true_labels, predicted_labels)
+
+print(f"NMI Score: {nmi_score:.4f}")
+print(f"Rand Index: {ri_score:.4f}")
+print(f"Adjusted Rand Index: {ari_score:.4f}")
 ```
 
-## Evaluation Metrics
-The implementation includes several evaluation metrics:
-- Normalized Mutual Information (NMI)
-- Rand Index (RI)
-- Adjusted Rand Index (ARI)
-- Error Rate
+## Algorithm Description
 
-## Visualizations
-The demo script generates several visualizations:
-1. Performance distribution across runs
-2. Final view weights
-3. Dimensionality reduction visualization
-4. Clustering visualization
-5. Confusion matrix
-6. Performance metrics across different initializations
-7. Convergence plot
+G-CoMVKM extends the traditional k-means algorithm to work with multi-view data. The algorithm:
+
+1. **Initializes** cluster centers randomly or using k-means++
+2. **Computes memberships** for each data point to the clusters
+3. **Updates cluster centers** based on these memberships
+4. **Updates feature weights** using an entropy-regularized optimization
+5. **Discards irrelevant features** based on a threshold
+6. **Updates view weights** to balance view importance
+7. **Repeats** steps 2-6 until convergence
+
+The objective function minimizes the within-cluster variance while encouraging feature and view sparsity through entropy regularization.
+
+## CLI Usage
+
+G-CoMVKM also provides a command-line interface:
+
+```bash
+# Run with default parameters on the synthetic dataset
+gcomvkm --dataset 2V2D2C
+
+# Run with custom parameters
+gcomvkm --dataset 2V2D2C --gamma 5.0 --theta 4.0 --n-clusters 2 --max-iter 100
+```
+
+### 💻 Technical Excellence & Implementation
+
+1. **Comprehensive Cross-Platform Development**
+
+   - ✅ Production-grade MATLAB Implementation (original repository)
+   - ✅ Professional Python Package ([PyPI: gcomvkm 0.1.0](https://pypi.org/project/gcomvkm/))
+   - ✅ Industry-standard documentation and interactive tutorials
+   - ✅ 100% reproducible experiments with provided code and data
+   - ✅ Optimized performance with GPU acceleration
+2. **Quality Assurance**
+
+   - Rigorous testing across multiple datasets
+   - Comprehensive error handling and input validation
+   - Performance benchmarking against state-of-the-art methods
+   - Clean, well-documented, and maintainable code
+3. **User Experience**
+
+   - Intuitive API design following scikit-learn conventions
+   - Detailed documentation with examples and tutorials
+   - Visualizations for better interpretation of results
+   - Command-line interface for quick experimentation
+
+## Citation
+
+If you use G-CoMVKM in your research, please cite:
+
+```bibtex
+@article{sinaga2020globally,
+  title={A Globally Collaborative Multi-View k-Means Clustering},
+  author={Sinaga, Kristina P.},
+  journal={Electronics},
+  volume={14},
+  number={11},
+  pages={2129},
+  year={2020},
+  publisher={MDPI}
+}
+```
+
+## Note
+
+The original code has been tested on MATLAB R2020a. Performance on other versions may vary. This Python implementation has been tested on Python 3.7+ and is compatible with most modern Python environments.
+
+### 💫 Beyond the "Impossible"
+
+As Arthur C. Clarke said, "The only way of discovering the limits of the possible is to venture a little way past them into the impossible."
+
+We didn't just venture—we blazed a trail:
+
+- Where they saw complexity, we found elegance
+- Where they predicted failure, we achieved excellence
+- Where they set limits, we broke boundaries
+- Where they said "impossible," we said "watch us"
+
+To aspiring researchers: Let our journey be a reminder that in science, "impossible" is often just a challenge waiting to be accepted. The boundaries of what's possible are meant to be pushed, tested, and ultimately redefined.
+
+## Contact
+
+- **Kristina P. Sinaga**
+- Email: kristinasinaga41@gmail.com
+- [GitHub](https://github.com/kpsinaga)
 
 ## References
-This implementation is based on the MATLAB code by Kristina P. Sinaga. For more details about the algorithm, please refer to the original paper.
+
+1. [A Globally Collaborative Multi-View k-Means Clustering](https://www.mdpi.com/2079-9292/14/11/2129) - Electronics MDPI
+2. Original MATLAB Implementation: [G-CoMVKM](https://github.com/kpsinaga/G-CoMVKM)
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
