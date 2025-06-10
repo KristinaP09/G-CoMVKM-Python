@@ -161,12 +161,12 @@ To aspiring researchers: Let our journey be a reminder that in science, "impossi
 
 - **Kristina P. Sinaga**
 - Email: kristinasinaga41@gmail.com
-- [GitHub](https://github.com/kpsinaga)
+- [GitHub](https://github.com/KristinaP09)
 
 ## References
 
 1. [A Globally Collaborative Multi-View k-Means Clustering](https://www.mdpi.com/2079-9292/14/11/2129) - Electronics MDPI
-2. Original MATLAB Implementation: [G-CoMVKM](https://github.com/kpsinaga/G-CoMVKM)
+2. Original MATLAB Implementation: [G-CoMVKM](https://github.com/KristinaP09/G-CoMVKM)
 
 ## License
 
