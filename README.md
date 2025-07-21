@@ -164,7 +164,7 @@ To aspiring researchers: Let our journey be a reminder that in science, "impossi
 ## Contact
 
 - **Kristina P. Sinaga**
-- Email: kristinasinaga41@gmail.com
+- Email: kristinapestaria.sinaga@isti.cnr.it (The email address kristinasinaga41@gmail.com is no longer under my authority. Please do not use it to contact me).
 - [GitHub](https://github.com/KristinaP09)
 
 ## References
